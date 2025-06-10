@@ -52,13 +52,9 @@ Abaixo está um exemplo simplificado de como o gráfico pode ser exibido no Graf
 +-------------------------------------------------+
 ```
 
-## 3. Material de Apoio
+## 3. Material de Apoio (Autoestudos)
 
 - [Alocação de memória](https://www.gta.ufrj.br/~cruz/courses/eel770/slides/9_memoria.pdf)
 - [Fundamentals of garbage collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
 - [Manipulação de bits](https://www.youtube.com/watch?v=Tuok3H5Girw)
 - Somerville, **Padrões de software**, páginas 458‑460
-
----
-
-Este repositório serve como base para estudos de instrumentação e visualização de métricas. Personalize conforme necessário para seus experimentos.
