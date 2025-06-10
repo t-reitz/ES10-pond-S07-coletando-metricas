@@ -13,7 +13,8 @@ Este repositório contém um pequeno exemplo para instrumentação de uma aplica
    ```bash
    npm start
    ```
-    A aplicação expõe diversas rotas:
+
+A aplicação expõe diversas rotas:
     - `/increment` incrementa um contador simples.
     - `/work` simula uma carga de trabalho e atualiza métricas de duração.
     - `/metrics` expõe todas as métricas no formato Prometheus.
@@ -35,6 +36,7 @@ Utilizaremos **Docker** para subir os serviços. Certifique-se de ter o Docker e
 ### Visualização
 
 Abaixo está um exemplo simplificado de como o gráfico pode ser exibido no Grafana. Após executar a rota `/save-graph`, uma imagem semelhante será gerada em `docs/`:
+
 
 ```
 +---------------- Grafana Dashboard ---------------+
