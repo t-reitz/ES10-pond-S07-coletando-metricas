@@ -53,10 +53,13 @@ app.get('/work', async (req, res) => {
   res.send('Trabalho concluído');
 });
 
-// Endpoint para gerar e salvar um gráfico na pasta docs
+// Endpoint para gerar e salvar um gráfico na pasta docs. Além da imagem, um
+// arquivo Markdown será atualizado com a lista de gráficos gerados.
 app.get('/save-graph', async (req, res) => {
   // Coleta os valores atuais do histograma
-  const metrics = await client.register.getSingleMetricAsString('http_request_duration_ms_bucket');
+  const metrics = await client.register.getSingleMetricAsString(
+    'http_request_duration_ms_bucket'
+  );
 
   const labels = [];
   const values = [];
@@ -83,6 +86,12 @@ app.get('/save-graph', async (req, res) => {
   const filePath = path.join(docsDir, `grafico_${Date.now()}.png`);
   fs.writeFileSync(filePath, image);
 
+  // Atualiza o arquivo Markdown com a lista de imagens
+  const mdPath = path.join(docsDir, 'graphs.md');
+  const relative = path.basename(filePath);
+  const line = `![](${relative})\n`;
+  fs.appendFileSync(mdPath, line);
+
   res.send(`Gráfico salvo em ${filePath}`);
 });
 
@@ -97,6 +106,15 @@ app.get('/metrics', async (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
+function startServer(customPort = port) {
+  return app.listen(customPort, () => {
+    console.log(`Server running on port ${customPort}`);
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };
