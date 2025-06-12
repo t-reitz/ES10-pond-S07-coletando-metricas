@@ -106,6 +106,7 @@ app.get('/metrics', async (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
+
 function startServer(customPort = port) {
   return app.listen(customPort, () => {
     console.log(`Server running on port ${customPort}`);
