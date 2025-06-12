@@ -69,7 +69,3 @@ npm test
 - [Fundamentals of garbage collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
 - [Manipulação de bits](https://www.youtube.com/watch?v=Tuok3H5Girw)
 - Somerville, **Padrões de software**, páginas 458‑460
-
----
-
-Este repositório serve como base para estudos de instrumentação e visualização de métricas. Personalize conforme necessário para seus experimentos.
