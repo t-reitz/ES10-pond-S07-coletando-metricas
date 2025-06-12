@@ -1,5 +1,3 @@
-// Exemplo de servidor Express instrumentado com Prometheus
-// Todos os comentários estão em português para facilitar o entendimento
 const express = require('express');
 const client = require('prom-client');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
@@ -7,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-// Coleta das métricas padrão do Node.js (uso de CPU, memória etc.)
+
+// Coleta métricas padrão do Prometheus
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics();
 
@@ -72,16 +71,26 @@ app.get('/save-graph', async (req, res) => {
     }
   });
 
+  const data = labels.map((label, idx) => ({
+    label,
+    value: values[idx],
+    sortValue: label === '+Inf' ? Infinity : parseFloat(label),
+  }));
+
+  data.sort((a, b) => a.sortValue - b.sortValue);
+  const sortedLabels = data.map(d => d.label);
+  const sortedValues = data.map(d => d.value);
+
   const configuration = {
     type: 'bar',
     data: {
-      labels,
-      datasets: [{ label: 'Quantidade', data: values }],
+      labels: sortedLabels,
+      datasets: [{ label: 'Quantidade', data: sortedValues }],
     },
   };
 
   const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-  const docsDir = path.join(__dirname, '..', 'docs');
+  const docsDir = path.resolve(__dirname, '..', 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
   const filePath = path.join(docsDir, `grafico_${Date.now()}.png`);
   fs.writeFileSync(filePath, image);
@@ -95,21 +104,24 @@ app.get('/save-graph', async (req, res) => {
   res.send(`Gráfico salvo em ${filePath}`);
 });
 
+// Rota para incrementar o contador manualmente
 app.get('/increment', (req, res) => {
   counter.inc();
   res.send('Counter incremented');
 });
 
+// Endpoint que expõe todas as métricas para scraping pelo Prometheus
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-const port = process.env.PORT || 3000;
-
-function startServer(customPort = port) {
-  return app.listen(customPort, () => {
-    console.log(`Server running on port ${customPort}`);
+function startServer(customPort) {
+  const port = customPort !== undefined
+    ? customPort
+    : (process.env.PORT || 3000);
+  return app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
   });
 }
 
